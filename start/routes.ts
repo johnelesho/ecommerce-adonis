@@ -20,7 +20,12 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 
+Route.post('/login', 'AuthController.login')
+Route.post('/register', 'AuthController.register')
+Route.post('/logout', 'AuthController.logout')
+
 Route.group(() => {
+  Route.resource('users', 'UsersController').apiOnly().except(['store'])
   Route.resource('products', 'ProductsController').apiOnly()
   Route.resource('products-category', 'ProductCategoriesController').apiOnly()
   Route.resource('products-sub-category', 'ProductSubCategoriesController').apiOnly()
