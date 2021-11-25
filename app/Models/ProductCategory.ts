@@ -8,6 +8,9 @@ export default class ProductCategory extends BaseModel {
   @column()
   public name: string
 
+  @column()
+  public status: number
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 

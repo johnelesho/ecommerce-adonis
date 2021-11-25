@@ -24,6 +24,7 @@ Route.group(() => {
   // Public routes
   Route.group(() => {
     Route.post('/login', 'AuthController.login')
+
     Route.post('/register', 'AuthController.register')
     Route.resource('products', 'ProductsController').apiOnly().only(['show', 'index'])
     Route.resource('products-category', 'ProductCategoriesController')
@@ -37,6 +38,7 @@ Route.group(() => {
   // Routes Requiring Authentication
   Route.group(() => {
     Route.post('/logout', 'AuthController.logout')
+    Route.post('/me', 'AuthController.currentUser')
 
     // Authentication is required for a user to be updated and deleted
     // but not needed to register a new user or show all or individual user information
@@ -58,5 +60,6 @@ Route.group(() => {
     Route.resource('products-sub-category', 'ProductSubCategoriesController')
       .apiOnly()
       .except(['show', 'index'])
-  }).middleware('auth:auth,api')
+  }).middleware('auth')
+  // .middleware('auth:auth,api')
 }).prefix('api/v1')

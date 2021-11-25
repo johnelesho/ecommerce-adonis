@@ -8,16 +8,16 @@ export default class AuthController {
     // const email = request.input('email')
     // const password = request.input('password')
 
-    const user = await request.validate(UserValidator)
-
-    console.log(user)
     try {
+      const user = await request.validate(UserValidator)
+
+      // console.log(user)
       // Generate token whether the user logs in with
       // username and Password, or
       //  email and password
-      const registered = await User.create(user)
+      const registered = await User.create({ ...user })
       console.log(registered)
-      const token = await auth.use('api').attempt(registered.email, registered.password, {
+      const token = await auth.use('api').attempt(user.email, user.password, {
         expiresIn: '7days',
       })
       // ||
@@ -30,7 +30,7 @@ export default class AuthController {
         token,
       })
     } catch (err) {
-      return response.badRequest(err.message)
+      return response.badRequest(err)
     }
   }
 
@@ -40,19 +40,36 @@ export default class AuthController {
     const { email, password, username } = await request.validate(LoginValidator)
 
     try {
-      const token =
-        (await auth.use('api').attempt(email, password, {
-          expiresIn: '7days',
-        })) ||
-        (await auth.use('api').attempt(username, password, {
-          expiresIn: '7days',
-        }))
+      const token = await auth.use('api').attempt(email! || username!, password, {
+        expiresIn: '7days',
+      })
+      // ||
+      // (await auth.use('api').attempt(username!, password, {
+      //   expiresIn: '7days',
+      // }))
       return response.ok({
         message: 'Login Successful',
         token,
       })
-    } catch {
-      return response.badRequest('Invalid credentials')
+    } catch (err) {
+      return response.badRequest({
+        message: err.message,
+        data: err,
+      })
+    }
+  }
+
+  public async currentUser({ auth, response }: HttpContextContract) {
+    try {
+      const user = auth.user!
+      return response.ok({
+        message: 'Current User Info',
+        data: user,
+      })
+    } catch (err) {
+      return response.badRequest({
+        message: err.message,
+      })
     }
   }
   public async logout({ auth }: HttpContextContract) {

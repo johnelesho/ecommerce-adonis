@@ -1,4 +1,5 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import { DayType } from '../../app/Models/Product'
 
 export default class Products extends BaseSchema {
   protected tableName = 'products'
@@ -25,7 +26,7 @@ export default class Products extends BaseSchema {
       table.string('title', 255)
       table.text('calendar_days').nullable()
       table.text('description')
-      table.enu('day_type', ['BLACK_FRIDAY', 'NORMAL', 'WEEKEND'], {
+      table.enu('day_type', Object.values(DayType), {
         useNative: true,
         enumName: 'products_day_type_enum',
         existingType: false,

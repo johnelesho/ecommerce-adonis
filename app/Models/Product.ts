@@ -11,7 +11,7 @@ export default class Product extends BaseModel {
   public userId: number
 
   @column()
-  public dayType: string
+  public dayType: DayType
 
   @column()
   public calendarDays: string
@@ -28,12 +28,16 @@ export default class Product extends BaseModel {
   @column()
   public description: string
 
-  @column()
-  public price: number
-
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+}
+
+export enum DayType {
+  // BlackFriday = 'Black_Friday',
+  Normal = 'Normal',
+  Weekend = 'Weekend',
+  Weekday = 'Weekday',
 }

@@ -1,4 +1,5 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import { UserStatus, UserType } from '../../app/Models/User'
 
 export default class UsersSchema extends BaseSchema {
   protected tableName = 'users'
@@ -15,14 +16,13 @@ export default class UsersSchema extends BaseSchema {
       table.string('contact_number', 255)
       table.text('address').notNullable()
       // table.enum('type', ['ADMIN', 'USER']).notNullable()
-      table.enu('status', ['PENDING', 'ACTIVE', 'SUSPENDED'], {
+      table.enu('status', Object.values(UserStatus), {
         useNative: true,
         enumName: 'users_status_enum',
         existingType: false,
       })
-
       table
-        .enu('type', ['ADMIN', 'USER', 'SELLER'], {
+        .enu('type', Object.values(UserType), {
           useNative: true,
           enumName: 'users_type_enum',
           existingType: false,

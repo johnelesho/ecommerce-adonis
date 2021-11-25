@@ -10,6 +10,9 @@ export default class User extends BaseModel {
   @column()
   public email: string
 
+  @column()
+  public username: string
+
   @column({ serializeAs: null })
   public password: string
 
@@ -51,13 +54,14 @@ export default class User extends BaseModel {
   }
 }
 
+// 'PENDING', 'ACTIVE', 'SUSPENDED'[('ADMIN', 'USER', 'SELLER')]
 export enum UserType {
-  Admin = 'ADMIN',
-  User = 'USER',
+  Admin = 'Admin',
+  User = 'User',
 }
 
 export enum UserStatus {
-  Single = 'SINGLE',
-  Married = 'MARRIED',
-  Divorced = 'DIVORCED',
+  Pending = 'Pending',
+  Active = 'Active',
+  Suspended = 'Suspended',
 }
