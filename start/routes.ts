@@ -33,6 +33,8 @@ Route.group(() => {
     Route.resource('products-sub-category', 'ProductSubCategoriesController')
       .apiOnly()
       .only(['show', 'index'])
+
+    Route.resource('users', 'UsersController').apiOnly().only(['show'])
   })
 
   // Routes Requiring Authentication
@@ -42,7 +44,7 @@ Route.group(() => {
 
     // Authentication is required for a user to be updated and deleted
     // but not needed to register a new user or show all or individual user information
-    Route.resource('users', 'UsersController').apiOnly().except(['store'])
+    Route.resource('users', 'UsersController').apiOnly().except(['store', 'show'])
 
     // Authentication is required to insert, update and delete a product
     // but not needed to show all or individual product information

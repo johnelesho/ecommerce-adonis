@@ -36,10 +36,10 @@ export const { actions } = Bouncer.define('userProduct', (user: User, product: P
   return product.userId === user.id
 })
   .define('isUserInfoOruserAdmin', (user: User, userToEdit: User) => {
-    return userToEdit.id === user.id || user.type === 'Admin'
+    return userToEdit.id === user.id || user.type.toLowerCase() === 'admin'
   })
   .define('isAdmin', (user: User) => {
-    return user.type === 'Admin'
+    return user.type.toLowerCase() === 'admin'
   })
 
 // define('editProductCategory', (user: User, productCategory: ProductCategory) => {

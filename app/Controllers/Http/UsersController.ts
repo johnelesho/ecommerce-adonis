@@ -1,20 +1,22 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import UserValidator from '../../Validators/UserValidator'
 import User from '../../Models/User'
+import UpdateUserValidator from '../../Validators/UpdateUserValidator'
 
 export default class UsersController {
-  public async index({ request, response }: HttpContextContract) {
+  public async index({ response, bouncer }: HttpContextContract) {
     try {
+      await bouncer.authorize('isAdmin')
       const users = await User.all()
 
       response.ok({
         message: 'All Registered Users',
         data: users,
+        totalNumberOfUsers: users.length,
       })
     } catch (err) {
-      response.serviceUnavailable({
-        data: null,
-        message: err,
+      response.unauthorized({
+        data: err,
+        message: err.message,
       })
     }
   }
@@ -29,18 +31,19 @@ export default class UsersController {
       })
     } catch (err) {
       response.notFound({
-        data: null,
-        message: err,
+        data: err,
+        message: err.message,
       })
     }
   }
 
   public async update({ request, bouncer, response }: HttpContextContract) {
     try {
+      // Authorize only the user to edit their own details except thec current user is an Admin
       const user = await User.findOrFail(request.param('id'))
-      const payload = await request.validate(UserValidator)
+      await bouncer.authorize('isUserInfoOruserAdmin', user)
+      const payload = await request.validate(UpdateUserValidator)
       Object.assign(user, payload)
-      const rule = await bouncer.authorize('isUserInfoOruserAdmin', user)
 
       const resp = await user.save()
       response.ok({
@@ -58,6 +61,7 @@ export default class UsersController {
   public async destroy({ request, bouncer, response }: HttpContextContract) {
     try {
       const user = await User.findOrFail(request.param('id'))
+      // Only an admin should be delete a user from the system
       await bouncer.authorize('isAdmin')
       await user.delete()
       response.noContent()

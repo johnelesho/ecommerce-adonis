@@ -1,7 +1,8 @@
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { UserStatus, UserType } from 'App/Models/User'
 
-export default class ProductCategoryValidator {
+export default class UpdateUserValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   /*
@@ -24,8 +25,16 @@ export default class ProductCategoryValidator {
    *    ```
    */
   public schema = schema.create({
-    name: schema.string(),
-    status: schema.number.optional([rules.range(0, 9)]),
+    firstName: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
+    lastName: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
+    username: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
+    email: schema.string.optional({ trim: true }, [rules.email()]),
+    rememberMeToken: schema.string.optional({ trim: true }),
+    password: schema.string.optional({}, [rules.confirmed()]),
+    address: schema.string.optional({ trim: true, escape: true }),
+    status: schema.enum.optional(Object.values(UserStatus)),
+    type: schema.enum.optional(Object.values(UserType)),
+    contactNumber: schema.string.optional({ trim: true }, [rules.mobile()]),
   })
 
   /**
