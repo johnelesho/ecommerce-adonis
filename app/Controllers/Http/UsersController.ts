@@ -1,12 +1,18 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import User from '../../Models/User'
-import UpdateUserValidator from '../../Validators/UpdateUserValidator'
+import UserServices from '@ioc:MiniEcommerce/UserService'
+import UserService from 'App/Services/UserService'
 
 export default class UsersController {
+  protected userService: UserService
+
+  constructor() {
+    this.userService = UserServices
+  }
+
   public async index({ response, bouncer }: HttpContextContract) {
     try {
       await bouncer.authorize('isAdmin')
-      const users = await User.all()
+      const users = await this.userService.find()
 
       response.ok({
         message: 'All Registered Users',
@@ -23,7 +29,7 @@ export default class UsersController {
 
   public async show({ response, request }: HttpContextContract) {
     try {
-      const user = await User.findOrFail(request.param('id'))
+      const user = await this.userService.findOne(request.param('id'))
 
       response.ok({
         message: 'Users',
@@ -40,12 +46,13 @@ export default class UsersController {
   public async update({ request, bouncer, response }: HttpContextContract) {
     try {
       // Authorize only the user to edit their own details except thec current user is an Admin
-      const user = await User.findOrFail(request.param('id'))
+      const userId = request.param('id')
+      // find the user using the repository layer
+      const user = await this.userService.findOne(userId)
+      // Update can only be made by the admin or the user to whom the info belong
       await bouncer.authorize('isUserInfoOruserAdmin', user)
-      const payload = await request.validate(UpdateUserValidator)
-      Object.assign(user, payload)
 
-      const resp = await user.save()
+      const resp = await this.userService.update(user, request)
       response.ok({
         message: 'User Updated',
         data: resp,
@@ -60,10 +67,9 @@ export default class UsersController {
 
   public async destroy({ request, bouncer, response }: HttpContextContract) {
     try {
-      const user = await User.findOrFail(request.param('id'))
       // Only an admin should be delete a user from the system
       await bouncer.authorize('isAdmin')
-      await user.delete()
+      await this.userService.delete(request.param('id'))
       response.noContent()
     } catch (err) {
       response.badRequest({

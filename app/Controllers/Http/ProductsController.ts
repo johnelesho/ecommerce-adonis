@@ -11,21 +11,19 @@ export default class ProductsController {
   }
 
   public async store({ request, response, auth }: HttpContextContract) {
-
     try {
-       const payload = await request.validate(ProductValidator)
-      const product = await Product.create({...payload, userId: auth.user?.id})
-       response.created({
-      message: 'Product Created',
-      data: product,
-    })
+      const payload = await request.validate(ProductValidator)
+      const product = await Product.create({ ...payload, userId: auth.user?.id })
+      response.created({
+        message: 'Product Created',
+        data: product,
+      })
+    } catch (err) {
+      response.badRequest({
+        message: err.message,
+        data: err,
+      })
     }
-    catch (err) {
-       response.badRequest({
-      message: err,
-      data: null,
-    })
-
   }
 
   public async show({ response, request }: HttpContextContract) {

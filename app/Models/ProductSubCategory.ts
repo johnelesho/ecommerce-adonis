@@ -7,7 +7,7 @@ export default class ProductSubCategory extends BaseModel {
   public id: number
 
   @hasMany(() => ProductCategory)
-  public ProductCategoryId: HasMany<typeof ProductCategory>
+  public productCategoryId: HasMany<typeof ProductCategory>
 
   @column()
   public name: string

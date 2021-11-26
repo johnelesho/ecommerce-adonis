@@ -1,4 +1,4 @@
-import { schema } from '@ioc:Adonis/Core/Validator'
+import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class ProductSubCategoryValidator {
@@ -25,7 +25,7 @@ export default class ProductSubCategoryValidator {
    */
   public schema = schema.create({
     name: schema.string(),
-    status: schema.boolean(),
+    status: schema.number.optional([rules.range(0, 9)]),
     productCategoryId: schema.number(),
   })
 

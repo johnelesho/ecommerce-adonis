@@ -1,52 +1,45 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import UserServices from '@ioc:MiniEcommerce/UserService'
+
 import LoginValidator from '../../Validators/LoginValidator'
-import UserValidator from '../../Validators/UserValidator'
-import User from '../../Models/User'
+import UserService from '../../Services/UserService'
 
 export default class AuthController {
+  protected userService: UserService
+
+  constructor() {
+    this.userService = UserServices
+  }
   public async register({ request, auth, response }: HttpContextContract) {
-    // const email = request.input('email')
-    // const password = request.input('password')
-
     try {
-      const user = await request.validate(UserValidator)
-
-      // console.log(user)
-      // Generate token whether the user logs in with
-      // username and Password, or
-      //  email and password
-      const registered = await User.create({ ...user })
-      console.log(registered)
-      const token = await auth.use('api').attempt(user.email, user.password, {
+      const registered = await this.userService.register(request)
+      const { email, password, username } = request.body()
+      const token = await auth.use('api').attempt(email || username, password, {
         expiresIn: '7days',
       })
-      // ||
-      // (await auth.use('api').attempt(username, password, {
-      //   expiresIn: '7days',
-      // }))
+
       return response.ok({
         data: registered,
         message: 'Login Successful',
         token,
       })
     } catch (err) {
-      return response.badRequest(err)
+      return response.badRequest({
+        data: err,
+        message: err.message,
+      })
     }
   }
 
   public async login({ request, auth, response }: HttpContextContract) {
-    // const email = request.input('email')
-    // const password = request.input('password')
     const { email, password, username } = await request.validate(LoginValidator)
 
+    // User logs in with their password and one of their email and username
     try {
       const token = await auth.use('api').attempt(email! || username!, password, {
         expiresIn: '7days',
       })
-      // ||
-      // (await auth.use('api').attempt(username!, password, {
-      //   expiresIn: '7days',
-      // }))
+
       return response.ok({
         message: 'Login Successful',
         token,
