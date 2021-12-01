@@ -11,6 +11,7 @@ export default class UsersController {
 
   public async index({ response, bouncer }: HttpContextContract) {
     try {
+      // Only admin can see all users
       await bouncer.authorize('isAdmin')
       const users = await this.userService.find()
 

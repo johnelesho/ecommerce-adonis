@@ -1,12 +1,17 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import ProductSubCategoryValidator from '../../Validators/ProductSubCategoryValidator'
-import ProductSubCategory from '../../Models/ProductSubCategory'
+// import SubCategoryServices from '@ioc:MiniEcommerce/SubCategoryService'
+import SubCategoryService from 'App/Services/SubCategoryService'
 
 export default class ProductSubCategoriesController {
+  protected subCategoryService: SubCategoryService
+
+  constructor() {
+    this.subCategoryService = new SubCategoryService()
+  }
   public async index({ response }: HttpContextContract) {
     // const { page = 1, limit = 10 } = request.qs()
 
-    const categories = await ProductSubCategory.all()
+    const categories = await this.subCategoryService.findAll()
     // const categories = (await ProductSubCategory.all()).slice(limit, page * limit)
     response.ok({
       message: 'All products Categories Found',
@@ -14,26 +19,10 @@ export default class ProductSubCategoriesController {
     })
   }
 
-  public async store({ request, bouncer, response }: HttpContextContract) {
-    try {
-      await bouncer.authorize('isAdmin')
-      const payload = await request.validate(ProductSubCategoryValidator)
-      const category = await ProductSubCategory.create(payload)
-      response.created({
-        message: 'New Categories Created',
-        data: category,
-      })
-    } catch (err) {
-      response.unauthorized({
-        message: err.message,
-        data: err,
-      })
-    }
-  }
-
   public async show({ response, request }: HttpContextContract) {
     try {
-      const category = await ProductSubCategory.findOrFail(request.param('id'))
+      const category = await this.subCategoryService.findOne(request.param('id'))
+      // const category = await ProductSubCategory.findOrFail(request.param('id'))
 
       response.ok({
         message: 'Category Found',
@@ -47,19 +36,36 @@ export default class ProductSubCategoriesController {
     }
   }
 
+  public async store({ request, bouncer, response }: HttpContextContract) {
+    try {
+      await bouncer.authorize('isAdmin')
+      // const payload = await request.validate(ProductSubCategoryValidator)
+      // const product = await this.productService.findOne(request.param('product_id'))
+      const category = await this.subCategoryService.create(request.param('category_id'), request)
+      // const category = await this.subCategoryService.create({ ...payload })
+      response.created({
+        message: 'New Sub Category Created',
+        data: category,
+      })
+    } catch (err) {
+      response.unauthorized({
+        message: err.message,
+        data: err,
+      })
+    }
+  }
+
   public async update({ request, bouncer, response }: HttpContextContract) {
     try {
       // Authorize only the admin to edit product category information
-
       await bouncer.authorize('isAdmin')
-      const category = await ProductSubCategory.findOrFail(request.param('id'))
-      const payload = await request.validate(ProductSubCategoryValidator)
-      Object.assign(category, payload)
+      const subCategory = await this.subCategoryService.findOne(request.param('id'))
 
-      const resp = await category.save()
+      const updatedSCategory = await this.subCategoryService.update(subCategory, request)
+
       response.ok({
         message: `Category Updated #${request.param('id')}`,
-        data: resp,
+        data: updatedSCategory,
       })
     } catch (err) {
       response.notFound({
@@ -71,10 +77,10 @@ export default class ProductSubCategoriesController {
 
   public async destroy({ request, bouncer, response }: HttpContextContract) {
     try {
-      const category = await ProductSubCategory.findOrFail(request.param('id'))
       // Only an admin should be delete a ProductSubCategory from the system
       await bouncer.authorize('isAdmin')
-      await category.delete()
+      await this.subCategoryService.delete(request.param('id'))
+
       response.noContent()
     } catch (err) {
       response.badRequest({

@@ -1,7 +1,5 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, hasMany, HasMany, HasOne, hasOne } from '@ioc:Adonis/Lucid/Orm'
-import ProductCategory from './ProductCategory'
-import ProductSubCategory from './ProductSubCategory'
+import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 
 export default class Product extends BaseModel {
   @column({ isPrimary: true })
@@ -16,11 +14,11 @@ export default class Product extends BaseModel {
   @column()
   public calendarDays: string
 
-  @hasMany(() => ProductCategory)
-  public productCategoryId: HasMany<typeof ProductCategory>
+  @column()
+  public productCategoryId: number
 
-  @hasOne(() => ProductSubCategory)
-  public productSubCategoryId: HasOne<typeof ProductSubCategory>
+  @column()
+  public productSubCategoryId: number
 
   @column()
   public title: string
@@ -36,7 +34,7 @@ export default class Product extends BaseModel {
 }
 
 export enum DayType {
-  // BlackFriday = 'Black_Friday',
+  BlackFriday = 'Black_Friday',
   Normal = 'Normal',
   Weekend = 'Weekend',
   Weekday = 'Weekday',

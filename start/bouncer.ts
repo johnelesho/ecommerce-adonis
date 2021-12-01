@@ -32,8 +32,8 @@ import ProductCategory from '../app/Models/ProductCategory'
 | NOTE: Always export the "actions" const from this file
 |****************************************************************
 */
-export const { actions } = Bouncer.define('userProduct', (user: User, product: Product) => {
-  return product.userId === user.id
+export const { actions } = Bouncer.define('userProductOrAdmin', (user: User, product: Product) => {
+  return product.userId === user.id || user.type.toLowerCase() === 'admin'
 })
   .define('isUserInfoOruserAdmin', (user: User, userToEdit: User) => {
     return userToEdit.id === user.id || user.type.toLowerCase() === 'admin'

@@ -26,15 +26,19 @@ Route.group(() => {
     Route.post('/login', 'AuthController.login')
 
     Route.post('/register', 'AuthController.register')
-    Route.resource('products', 'ProductsController').apiOnly().only(['show', 'index'])
-    Route.resource('products-category', 'ProductCategoriesController')
-      .apiOnly()
-      .only(['show', 'index'])
-    Route.resource('products-sub-category', 'ProductSubCategoriesController')
+    // Route.shallowResource('products', 'ProductsController').apiOnly().only(['show', 'index'])
+    Route.resource('category', 'ProductCategoriesController').apiOnly().only(['show', 'index'])
+    Route.get('category/:category_id/products', 'ProductCategoriesController.productsInCategory')
+    Route.get(
+      'category/:category_id/subcategories',
+      'ProductCategoriesController.getAllSubCategory'
+    )
+
+    Route.shallowResource('subcategory', 'ProductSubCategoriesController')
       .apiOnly()
       .only(['show', 'index'])
 
-    Route.resource('users', 'UsersController').apiOnly().only(['show'])
+    Route.shallowResource('users', 'UsersController').apiOnly().only(['show'])
   })
 
   // Routes Requiring Authentication
@@ -45,21 +49,24 @@ Route.group(() => {
     // Authentication is required for a user to be updated and deleted
     // but not needed to register a new user or show all or individual user information
     Route.resource('users', 'UsersController').apiOnly().except(['store', 'show'])
-
+    Route.get('productsByUser', 'ProductsController.getAllProductsByUser')
     // Authentication is required to insert, update and delete a product
     // but not needed to show all or individual product information
-    Route.resource('products', 'ProductsController').apiOnly().except(['show', 'index'])
+    Route.shallowResource('products', 'ProductsController').apiOnly().except(['show', 'index'])
 
     // Authentication is required to insert, update and delete a product category information
     // but not needed to show all or individual product category information
 
-    Route.resource('products-category', 'ProductCategoriesController')
+    Route.shallowResource('category', 'ProductCategoriesController')
       .apiOnly()
       .except(['show', 'index'])
+    // Route.shallowResource('category.products', 'ProductCategoriesController')
+    //   .apiOnly()
+    //   .except(['show', 'index'])
 
     // Authentication is required to insert, update and delete a product sub category information
     // but not needed to show all or individual product sub category information
-    Route.resource('products-sub-category', 'ProductSubCategoriesController')
+    Route.shallowResource('category.subcategory', 'ProductSubCategoriesController')
       .apiOnly()
       .except(['show', 'index'])
   }).middleware('auth')

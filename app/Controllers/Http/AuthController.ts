@@ -3,6 +3,7 @@ import UserServices from '@ioc:MiniEcommerce/UserService'
 
 import LoginValidator from '../../Validators/LoginValidator'
 import UserService from '../../Services/UserService'
+import Product from '../../Models/Product'
 
 export default class AuthController {
   protected userService: UserService
@@ -20,7 +21,7 @@ export default class AuthController {
 
       return response.ok({
         data: registered,
-        message: 'Login Successful',
+        message: 'Registration Successful ',
         token,
       })
     } catch (err) {
@@ -55,9 +56,14 @@ export default class AuthController {
   public async currentUser({ auth, response }: HttpContextContract) {
     try {
       const user = auth.user!
+      const products = await user.related('products').query()
+      // return products
       return response.ok({
         message: 'Current User Info',
-        data: user,
+        data: {
+          user,
+          products,
+        },
       })
     } catch (err) {
       return response.badRequest({

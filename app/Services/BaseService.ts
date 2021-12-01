@@ -1,4 +1,4 @@
-import { BaseModel } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, LucidModel } from '@ioc:Adonis/Lucid/Orm'
 import BaseInterface from 'Contracts/interfaces/Base.Interface'
 
 export default class BaseService implements BaseInterface {
@@ -7,8 +7,10 @@ export default class BaseService implements BaseInterface {
   constructor(model: typeof BaseModel) {
     this.model = model
   }
-
-  public async find(id: number) {
-    return this.model.find(id)
+  public async findAll() {
+    return await this.model.all()
+  }
+  public async findOne(id: number) {
+    return await this.model.find(id)
   }
 }

@@ -1,8 +1,8 @@
 import { schema } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { DayType } from '../Models/Product'
+import { DayType } from 'App/Models/Product'
 
-export default class ProductValidator {
+export default class UpdateProductValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   /*
@@ -26,12 +26,12 @@ export default class ProductValidator {
    */
   public schema = schema.create({
     // userId: schema.number(),
-    dayType: schema.enum(Object.values(DayType)),
-    calendarDays: schema.string({ trim: true }),
-    title: schema.string({ trim: true }),
-    description: schema.string({ trim: true }),
-    productCategoryId: schema.number(),
-    productSubCategoryId: schema.number(),
+    dayType: schema.enum.optional(Object.values(DayType)),
+    calendarDays: schema.string.optional({ trim: true }),
+    title: schema.string.optional({ trim: true }),
+    description: schema.string.optional({ trim: true }),
+    productCategoryId: schema.number.optional(),
+    productSubCategoryId: schema.number.optional(),
   })
 
   /**

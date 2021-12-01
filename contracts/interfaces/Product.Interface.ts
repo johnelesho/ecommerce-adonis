@@ -1,7 +1,8 @@
-import User from 'App/Models/User'
 import Product from '../../app/Models/Product'
+import User from '../../app/Models/User'
 export default interface ProductInterface {
   index()
-  create(user: User, product: Product)
-  update(post_id: number, product: Product): Promise<boolean>
+  create(user: User, data: any)
+  update(product: Product, data: any)
+  findOne(id: number)
 }

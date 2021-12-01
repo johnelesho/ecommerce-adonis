@@ -1,5 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm'
+import ProductSubCategory from './ProductSubCategory'
+import Product from './Product'
 
 export default class ProductCategory extends BaseModel {
   @column({ isPrimary: true })
@@ -7,6 +9,12 @@ export default class ProductCategory extends BaseModel {
 
   @column()
   public name: string
+
+  @hasMany(() => ProductSubCategory)
+  public productSubCategories: HasMany<typeof ProductSubCategory>
+
+  @hasMany(() => Product)
+  public products: HasMany<typeof Product>
 
   @column()
   public status: number

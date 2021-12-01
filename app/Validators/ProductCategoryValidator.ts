@@ -25,7 +25,7 @@ export default class ProductCategoryValidator {
    */
   public schema = schema.create({
     name: schema.string(),
-    status: schema.number.optional([rules.range(0, 9)]),
+    status: schema.number([rules.range(0, 9)]),
   })
 
   /**

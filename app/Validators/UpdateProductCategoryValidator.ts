@@ -1,8 +1,7 @@
 import { schema } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { DayType } from '../Models/Product'
 
-export default class ProductValidator {
+export default class UpdateProductCategoryValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   /*
@@ -24,15 +23,7 @@ export default class ProductValidator {
    *     ])
    *    ```
    */
-  public schema = schema.create({
-    // userId: schema.number(),
-    dayType: schema.enum(Object.values(DayType)),
-    calendarDays: schema.string({ trim: true }),
-    title: schema.string({ trim: true }),
-    description: schema.string({ trim: true }),
-    productCategoryId: schema.number(),
-    productSubCategoryId: schema.number(),
-  })
+  public schema = schema.create({})
 
   /**
    * Custom messages for validation failures. You can make use of dot notation `(.)`
