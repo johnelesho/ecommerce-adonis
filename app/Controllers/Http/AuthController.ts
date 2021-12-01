@@ -3,7 +3,6 @@ import UserServices from '@ioc:MiniEcommerce/UserService'
 
 import LoginValidator from '../../Validators/LoginValidator'
 import UserService from '../../Services/UserService'
-import Product from '../../Models/Product'
 
 export default class AuthController {
   protected userService: UserService

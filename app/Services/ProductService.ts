@@ -4,7 +4,6 @@ import Product from '../Models/Product'
 import ProductValidator from 'App/Validators/ProductValidator'
 import User from '../Models/User'
 import UpdateProductValidator from '../Validators/UpdateProductValidator'
-import ProductCategory from '../Models/ProductCategory'
 import { RequestContract } from '@ioc:Adonis/Core/Request'
 
 export default class ProductService extends BaseService implements ProductInterface {

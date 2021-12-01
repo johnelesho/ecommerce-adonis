@@ -1,4 +1,4 @@
-import { BaseModel, LucidModel } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel } from '@ioc:Adonis/Lucid/Orm'
 import BaseInterface from 'Contracts/interfaces/Base.Interface'
 
 export default class BaseService implements BaseInterface {
