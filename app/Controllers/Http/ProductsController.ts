@@ -17,8 +17,8 @@ export default class ProductsController {
       })
     } catch (error) {
       response.abort({
-        message: error,
-        data: error.message,
+        message: error.message,
+        data: null,
       })
     }
   }
@@ -31,8 +31,8 @@ export default class ProductsController {
       })
     } catch (error) {
       response.abort({
-        message: error,
-        data: error.message,
+        message: error.message,
+        data: null,
       })
     }
   }
@@ -49,27 +49,41 @@ export default class ProductsController {
     } catch (err) {
       response.badRequest({
         message: err.message,
-        data: err,
+        data: null,
       })
     }
   }
 
   public async show({ response, request }: HttpContextContract) {
-    const product = await this.productService.findOne(request.param('id'))
-    response.ok({
-      message: `Product Found: #${request.param('id')}`,
-      data: product,
-    })
+    try {
+      const product = await this.productService.findOne(request.param('id'))
+      response.ok({
+        message: `Product Found: #${request.param('id')}`,
+        data: product,
+      })
+    } catch (error) {
+      response.badRequest({
+        message: error.message,
+        data: null,
+      })
+    }
   }
 
   public async update({ request, response, bouncer }: HttpContextContract) {
-    const product = await this.productService.findOne(request.param('id'))
-    await bouncer.authorize('userProductOrAdmin', product)
-    const updatedProduct = await this.productService.update(product, request)
-    response.ok({
-      message: `Product Updated: #${request.params['id']}`,
-      data: updatedProduct,
-    })
+    try {
+      const product = await this.productService.findOne(request.param('id'))
+      await bouncer.authorize('userProductOrAdmin', product)
+      const updatedProduct = await this.productService.update(product, request)
+      response.ok({
+        message: `Product Updated: #${request.params['id']}`,
+        data: updatedProduct,
+      })
+    } catch (error) {
+      response.badRequest({
+        message: error.message,
+        data: null,
+      })
+    }
   }
 
   public async destroy({ request, bouncer, response }: HttpContextContract) {

@@ -26,7 +26,7 @@ Route.group(() => {
     Route.post('/login', 'AuthController.login')
 
     Route.post('/register', 'AuthController.register')
-    // Route.shallowResource('products', 'ProductsController').apiOnly().only(['show', 'index'])
+    Route.shallowResource('products', 'ProductsController').apiOnly().only(['show', 'index'])
     Route.resource('category', 'ProductCategoriesController').apiOnly().only(['show', 'index'])
     Route.get('category/:category_id/products', 'ProductCategoriesController.productsInCategory')
     Route.get(
