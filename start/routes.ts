@@ -37,19 +37,24 @@ Route.group(() => {
     Route.shallowResource('subcategory', 'ProductSubCategoriesController')
       .apiOnly()
       .only(['show', 'index'])
+    Route.get(
+      'subcategory/:sub_category_id/products',
+      'ProductSubCategoriesController.productsInSubCategory'
+    )
 
     Route.shallowResource('users', 'UsersController').apiOnly().only(['show'])
+    Route.get('users/:userId/products', 'ProductsController.getAllProductsByUser')
   })
 
   // Routes Requiring Authentication
   Route.group(() => {
     Route.post('/logout', 'AuthController.logout')
     Route.post('/me', 'AuthController.currentUser')
+    Route.get('me/products', 'ProductsController.getAllProductsByCurrentUser')
 
     // Authentication is required for a user to be updated and deleted
     // but not needed to register a new user or show all or individual user information
     Route.resource('users', 'UsersController').apiOnly().except(['store', 'show'])
-    Route.get('productsByUser', 'ProductsController.getAllProductsByUser')
     // Authentication is required to insert, update and delete a product
     // but not needed to show all or individual product information
     Route.shallowResource('products', 'ProductsController').apiOnly().except(['show', 'index'])

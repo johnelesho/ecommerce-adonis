@@ -22,11 +22,26 @@ export default class ProductsController {
       })
     }
   }
-  public async getAllProductsByUser({ response, auth }: HttpContextContract) {
+  public async getAllProductsByCurrentUser({ response, auth }: HttpContextContract) {
     try {
-      const products = await this.productService.productsByUser(auth.user!)
+      const products = await this.productService.productsByCurrentUser(auth.user!)
       response.ok({
-        message: 'All Product Found',
+        message: 'All Product By Current User',
+        data: products,
+      })
+    } catch (error) {
+      response.abort({
+        message: error.message,
+        data: null,
+      })
+    }
+  }
+
+  public async getAllProductsByUser({ request, response }: HttpContextContract) {
+    try {
+      const products = await this.productService.productsByUser(request.param('userId'))
+      response.ok({
+        message: 'All Product By User',
         data: products,
       })
     } catch (error) {
@@ -39,8 +54,6 @@ export default class ProductsController {
 
   public async store({ request, response, auth }: HttpContextContract) {
     try {
-      // const payload = await request.validate(ProductValidator)
-      // const product = await Product.create({ ...payload, userId: auth.user?.id })
       const product = await this.productService.create(auth.user!, request)
       response.created({
         message: 'Product Created',
@@ -49,7 +62,7 @@ export default class ProductsController {
     } catch (err) {
       response.badRequest({
         message: err.message,
-        data: null,
+        data: err,
       })
     }
   }
@@ -64,7 +77,7 @@ export default class ProductsController {
     } catch (error) {
       response.badRequest({
         message: error.message,
-        data: null,
+        data: error,
       })
     }
   }

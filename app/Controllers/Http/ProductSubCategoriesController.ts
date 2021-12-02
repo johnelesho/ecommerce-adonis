@@ -14,7 +14,7 @@ export default class ProductSubCategoriesController {
     const categories = await this.subCategoryService.findAll()
     // const categories = (await ProductSubCategory.all()).slice(limit, page * limit)
     response.ok({
-      message: 'All products Categories Found',
+      message: 'All products Sub Categories Found',
       data: categories,
     })
   }
@@ -39,10 +39,9 @@ export default class ProductSubCategoriesController {
   public async store({ request, bouncer, response }: HttpContextContract) {
     try {
       await bouncer.authorize('isAdmin')
-      // const payload = await request.validate(ProductSubCategoryValidator)
-      // const product = await this.productService.findOne(request.param('product_id'))
+
       const category = await this.subCategoryService.create(request.param('category_id'), request)
-      // const category = await this.subCategoryService.create({ ...payload })
+
       response.created({
         message: 'New Sub Category Created',
         data: category,
@@ -53,6 +52,19 @@ export default class ProductSubCategoriesController {
         data: err,
       })
     }
+  }
+
+  public async productsInSubCategory({ request, response }: HttpContextContract) {
+    // const { page = 1, limit = 10 } = request.qs()
+
+    const categories = await this.subCategoryService.allProductsInSubCategory(
+      request.param('sub_category_id')
+    )
+    response // const categories = (await ProductCategory.all()).slice(limit, page * limit)
+      .ok({
+        message: 'All products in Categories Found',
+        data: categories,
+      })
   }
 
   public async update({ request, bouncer, response }: HttpContextContract) {

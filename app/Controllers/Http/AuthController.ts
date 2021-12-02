@@ -56,7 +56,7 @@ export default class AuthController {
     try {
       const user = auth.user!
       const products = await user.related('products').query()
-      // return products
+      // return the current user and his products
       return response.ok({
         message: 'Current User Info',
         data: {
@@ -67,6 +67,7 @@ export default class AuthController {
     } catch (err) {
       return response.badRequest({
         message: err.message,
+        data: err,
       })
     }
   }

@@ -5,6 +5,7 @@ import ProductSubCategoryValidator from 'App/Validators/ProductSubCategoryValida
 import UpdateProductSubCategoryValidator from '../Validators/UpdateProductSubCategoryValidator'
 // import ProductServices from '@ioc:MiniEcommerce/ProductService'
 import CategoryService from './CategoryService'
+import Product from '../Models/Product'
 
 export default class SubCategoryService extends BaseService implements ProductSubCategoryInterface {
   protected categoryService: CategoryService
@@ -13,17 +14,30 @@ export default class SubCategoryService extends BaseService implements ProductSu
     super(ProductSubCategory)
     this.categoryService = new CategoryService()
   }
+  public async allProductsInSubCategory(subcategoryId: number) {
+    // return await this.model.all()
+    const product = Product.findBy('productSubCategoryId', subcategoryId)
+    // await this.model.findOrFail(subcategoryId).related('productCategory').query()
+    // .related('productCategory').query()
+    // ProductCategory.related('')
+
+    return product
+  }
   public async index() {
     return await this.model.all()
   }
-  public async delete(userId: number) {
-    const user = await this.model.findOrFail(userId)
-    await user.delete()
+  public async delete(subcategoryId: number) {
+    const subcategory = await this.model.findOrFail(subcategoryId)
+    await subcategory.delete()
   }
   public async findOne(id: number): Promise<ProductSubCategory> {
-    const user = await this.model.findOrFail(id)
+    try {
+      const subcategory = await this.model.findOrFail(id)
 
-    return user
+      return subcategory
+    } catch (error) {
+      throw error
+    }
   }
 
   public async create(
@@ -40,12 +54,12 @@ export default class SubCategoryService extends BaseService implements ProductSu
       throw error
     }
   }
-  public async update(product: ProductSubCategory, data) {
+  public async update(subcategory: ProductSubCategory, data) {
     try {
       const payload = await data.validate(UpdateProductSubCategoryValidator)
-      Object.assign(product, payload)
+      Object.assign(subcategory, payload)
 
-      return await product.save()
+      return await subcategory.save()
     } catch (err) {
       throw err
     }

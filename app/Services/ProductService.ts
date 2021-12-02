@@ -5,13 +5,22 @@ import ProductValidator from 'App/Validators/ProductValidator'
 import User from '../Models/User'
 import UpdateProductValidator from '../Validators/UpdateProductValidator'
 import { RequestContract } from '@ioc:Adonis/Core/Request'
+import UserService from './UserService'
 
 export default class ProductService extends BaseService implements ProductInterface {
+  protected userService
   constructor() {
     super(Product)
+    this.userService = new UserService()
   }
 
-  public async productsByUser(user: User) {
+  public async productsByUser(userId: number) {
+    const user = await this.userService.findOne(userId)
+    const products = await user.related('products').query()
+    return products
+  }
+
+  public async productsByCurrentUser(user: User) {
     const products = await user.related('products').query()
     return products
   }
@@ -32,16 +41,8 @@ export default class ProductService extends BaseService implements ProductInterf
   public async create(user: User, data: { validate: (arg0: typeof ProductValidator) => any }) {
     try {
       const payload = await data.validate(ProductValidator)
-      // const product = await Product.create({ ...payload, userId: userId })
-      // const category = await ProductCategory.findOrFail(categoryId)
-      // // ProductCategory.table
-      // await category.related('products').create({ ...payload })
-      const product = await user.related('products').create({ ...payload })
 
-      // create({ ...payload })
-      // .related('productCategoryId')
-      // .save()
-      // .related('product').sa
+      const product = await user.related('products').create({ ...payload })
 
       return product
     } catch (error) {

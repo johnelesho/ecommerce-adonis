@@ -28,8 +28,8 @@ export default class ProductCategoriesController {
       })
     } catch (err) {
       response.notFound({
-        data: err.message,
-        message: err,
+        data: null,
+        message: err.message,
       })
     }
   }

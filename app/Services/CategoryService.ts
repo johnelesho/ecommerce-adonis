@@ -10,7 +10,6 @@ export default class CategoryService extends BaseService implements ProductCateg
     super(ProductCategory)
   }
   public async allSubCategories(categoryId: number) {
-    // return await this.model.all()
     const category = (await this.model.findOrFail(categoryId))
       .related('productSubCategories')
       .query()
@@ -19,7 +18,6 @@ export default class CategoryService extends BaseService implements ProductCateg
     return category
   }
   public async allProductsInCategory(categoryId: number) {
-    // return await this.model.all()
     const product = (await this.model.findOrFail(categoryId)).related('products').query()
     // ProductCategory.related('')
 
@@ -28,22 +26,20 @@ export default class CategoryService extends BaseService implements ProductCateg
   public async index() {
     return await this.model.all()
   }
-  public async delete(userId: number) {
-    const user = await this.model.findOrFail(userId)
-    await user.delete()
+  public async delete(categoryId: number) {
+    const category = await this.model.findOrFail(categoryId)
+    await category.delete()
   }
   public async findOne(id: number): Promise<ProductCategory> {
-    const user = await this.model.findOrFail(id)
+    const category = await this.model.findOrFail(id)
 
-    return user
+    return category
   }
 
   public async create(data: { validate: (arg0: typeof ProductCategoryValidator) => any }) {
     try {
-      // const product = await Product.findOrFail(productId)
       const payload = await data.validate(ProductCategoryValidator)
       const category = this.model.create({ ...payload })
-      // save(payload)
 
       return category
     } catch (error) {
